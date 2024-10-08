@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from ctkmessagebox.ctkmessagebox import *
+from ctkmessagebox2.ctkmessagebox import *
 
 ctk.set_appearance_mode('light')
 

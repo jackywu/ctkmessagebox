@@ -3,6 +3,6 @@ venv/
 *.pypirc
 .idea/
 dist/
-ctkmessagebox.egg-info/
+ctkmessagebox2.egg-info/
 pyproject.toml
 setup.py

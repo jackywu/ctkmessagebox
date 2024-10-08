@@ -19,7 +19,7 @@ This package offers the following functionalities, replicating the behavior of `
 Install the package via pip:
 
 ```bash
-pip install ctkmessagebox
+pip install ctkmessagebox2
 ```
 
 ## Project Structure
@@ -32,13 +32,15 @@ Here’s a basic example of how to use the CustomTkinter Messagebox:
 
 ```python
 import customtkinter as ctk
-import ctkmessagebox
+import ctkmessagebox2
 
 app = ctk.CTk()
 app.geometry("400x200")
 
+
 def show_info():
-    ctkmessagebox.showinfo(app, "Information", "This is an informational message.")
+    ctkmessagebox2.showinfo(app, "Information", "This is an informational message.")
+
 
 button = ctk.CTkButton(app, text="Show Info", command=show_info)
 button.pack(pady=20)
