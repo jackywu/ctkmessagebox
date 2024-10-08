@@ -223,7 +223,7 @@ python -m ctkmessagebox2.demo
 ## Contributions
 Contributions are welcome! If you want to improve the project, feel free to open an issue or submit a pull request.
 
-Check the source code at https://github.com/hoffmanlucas/ctkmessagebox.
+Check the source code at [GitHub - ctkmessagebox](https://github.com/hoffmanlucas/ctkmessagebox.)
 
 ### Fork the repository
 - Create a branch (git checkout -b feature/new-feature)
