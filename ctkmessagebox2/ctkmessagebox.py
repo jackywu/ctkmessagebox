@@ -1,21 +1,23 @@
+import os
 import customtkinter as ctk
 from PIL import Image
-import os
+from functools import partial
 
 
-__all__ = ["showinfo", "showwarning", "showerror",
-           "askquestion", "askokcancel", "askyesno",
-           "askyesnocancel", "askretrycancel"]
+__all__ = ["showinfo", "showwarning", "showerror", "showcustom",
+           "showsuccess", "askokcancel", "askyesno",
+           "askyesnocancel", "askretrycancel", "askabortignore",
+           "ERROR", "INFO", "QUESTION", "WARNING", "SUCCESS"]
+
 
 def resource_path(relative_path) -> str:
-    """ Retorna o caminho absoluto do recurso usando o caminho do arquivo atual """
+    """Returns the absolute path of the resource using the current file path"""
     base_path = os.path.dirname(__file__)
     path = str(os.path.join(base_path, relative_path))
     return path
 
-# constants
-# icons
 
+# icons
 ERROR = resource_path("icons/error-icon.png")
 INFO = resource_path("icons/info-icon.png")
 QUESTION = resource_path("icons/ask-icon.png")
@@ -24,91 +26,94 @@ SUCCESS = resource_path("icons/ok-icon.png")
 
 # types
 ABORTRETRYIGNORE = "abortretryignore"
-OK = "ok"
+# OK = "Ok"
 OKCANCEL = "okcancel"
 RETRYCANCEL = "retrycancel"
 YESNO = "yesno"
 YESNOCANCEL = "yesnocancel"
+CUSTOM = "custom"
 
 # replies
-ABORT = "abort"
-RETRY = "retry"
-IGNORE = "ignore"
-# OK = "ok"
-CANCEL = "cancel"
-YES = "yes"
-NO = "no"
+ABORT = "Abort"
+RETRY = "Retry"
+CANCEL = "Cancel"
+OK = 'Ok'
+YES = 'Yes'
+NO = 'No'
 
 
-def showinfo(master, title=None, message=None):
-    """Show an info message"""
+
+def showinfo(master, title:str, message:str) -> str:
+    """Show an info message;  return the button pressed."""
     return MessageBox(master, title, message, INFO, OK).get()
 
 
-def showsuccess(master, title=None, message=None):
-    """Show an info message"""
+def showsuccess(master, title:str, message:str) -> str:
+    """Show an info message;"""
     return MessageBox(master, title, message, SUCCESS, OK).get()
 
 
-def showwarning(master, title=None, message=None):
-    """Show a warning message"""
+def showwarning(master, title:str, message:str) -> str:
+    """Show a warning message;  return the button pressed."""
     return MessageBox(master, title, message, WARNING, OK).get()
 
 
-def showerror(master, title=None, message=None):
-    """Show an error message"""
+def showerror(master, title:str, message:str) -> str:
+    """Show an error message; return the button pressed."""
     return MessageBox(master, title, message, ERROR, OK).get()
 
 
-def askquestion(master, title=None, message=None):
-    """Ask a question"""
-    return MessageBox(master, title, message, QUESTION, YESNO).get()
-
-
-def askokcancel(master, title=None, message=None):
-    """Ask if operation should proceed; return true if the answer is ok"""
+def askokcancel(master, title:str, message:str) -> str:
+    """Ask if operation should proceed;  return the button pressed."""
     return MessageBox(master, title, message, QUESTION, OKCANCEL).get()
 
 
-def askyesno(master, title=None, message=None):
-    """Ask a question; return true if the answer is yes"""
+def askyesno(master, title:str, message:str) -> str:
+    """Ask a question;  return the button pressed."""
     return MessageBox(master, title, message, QUESTION, YESNO).get()
 
 
-def askyesnocancel(master, title=None, message=None):
-    """Ask a question; return true if the answer is yes, None if cancelled."""
+def askyesnocancel(master, title:str, message:str) -> str:
+    """Ask a question; return the button pressed."""
     return MessageBox(master, title, message, QUESTION, YESNOCANCEL).get()
 
 
-def askretrycancel(master, title=None, message=None):
-    """Ask if operation should be retried; return true if the answer is yes"""
+def askretrycancel(master, title:str, message:str) -> str:
+    """Ask if operation should be retried; return the button pressed."""
     return MessageBox(master, title, message, WARNING, RETRYCANCEL).get()
+
+
+def askabortignore(master, title:str, message:str) -> str:
+    """Ask if operation should be retried or ignored; return the button pressed."""
+    return MessageBox(master, title, message, WARNING, ABORTRETRYIGNORE).get()
+
+
+def showcustom(master, title:str, message:str, icon:str=INFO, *buttons) -> str:
+    """Show a messagebox with custom buttons
+
+    icon: str. Options available:
+        ctkmessagebox2.ERROR, ctkmessagebox2.INFO, ctkmessagebox2.QUESTION, ctkmessagebox2.WARNING, ctkmessagebox2.SUCCESS
+        """
+    return MessageBox(master, title, message, WARNING, CUSTOM, *buttons).get()
 
 
 class MessageBox(ctk.CTkToplevel):
     """A customtkinter message box"""
-    def __init__(self, master, title:str, message: str, _icon:str, _type:str):
-        super().__init__(master)
-
+    def __init__(self, master, title:str, message: str, _icon:str, _type:str, *buttons):
         n_lines = len(message) // 40
         n_lines += message.count('\n')
-        self.minsize(450, 150 + 10*n_lines)
+        super().__init__(master)
 
+        # Layout
+        self.geometry(f"450x{150 + 9*n_lines}")
         self.title(title)
         self.resizable(False, False)
         self.attributes('-topmost', True)
-
-        # Layout
-        self.columnconfigure(0, weight=0)
-        self.columnconfigure(1, weight=1)
-        self.rowconfigure(0, weight=0)
-        self.rowconfigure(1, weight=1)
 
         msg_frame = ctk.CTkFrame(self, fg_color='transparent')
         msg_frame.pack(fill=ctk.BOTH, expand=True, padx=20, pady=(20,0))
 
         image = ctk.CTkImage(Image.open(_icon), size=(50, 50))
-
         ctk.CTkLabel(msg_frame, text='', image=image).pack(side=ctk.LEFT, padx=5)
 
         text = ctk.CTkTextbox(msg_frame, wrap='word', fg_color='transparent', height=20)
@@ -116,44 +121,57 @@ class MessageBox(ctk.CTkToplevel):
         text.insert(0.0, message)
         text.configure(state='disabled')
 
-
         buttons_frame = ctk.CTkFrame(self, fg_color='transparent')
         buttons_frame.pack(padx=20, pady=20, anchor=ctk.CENTER)
 
         self.result = None
+        self.buttons = buttons
+
+        _pack = dict(side=ctk.LEFT, padx=5, pady=5)
 
         if _type == OK:
-            ctk.CTkButton(buttons_frame, text='OK', width=100, command=self._ok).pack(side=ctk.LEFT, padx=5, pady=5)
+            ctk.CTkButton(buttons_frame, text='OK', width=100, command=self._ok).pack(**_pack)
         elif _type == OKCANCEL:
-            ctk.CTkButton(buttons_frame, text='OK', width=100, command=self._ok).pack(side=ctk.LEFT, padx=5, pady=5)
-            ctk.CTkButton(buttons_frame, text='Cancel', width=100, command=self._no).pack(side=ctk.LEFT, padx=5, pady=5)
+            ctk.CTkButton(buttons_frame, text='OK', width=100, command=self._ok).pack(**_pack)
+            ctk.CTkButton(buttons_frame, text='Cancel', width=100, command=self._cancel).pack(**_pack)
         elif _type == RETRYCANCEL:
-            ctk.CTkButton(buttons_frame, text='Retry', width=100, command=self._ok).pack(side=ctk.LEFT,padx=5, pady=5)
-            ctk.CTkButton(buttons_frame, text='Cancel', width=100, command=self._no).pack(side=ctk.LEFT, padx=5, pady=5)
+            ctk.CTkButton(buttons_frame, text='Retry', width=100, command=self._retry).pack(**_pack)
+            ctk.CTkButton(buttons_frame, text='Cancel', width=100, command=self._cancel).pack(**_pack)
         elif _type == YESNO:
-            ctk.CTkButton(buttons_frame, text='Yes', width=100, command=self._ok).pack(side=ctk.LEFT, padx=5, pady=5)
-            ctk.CTkButton(buttons_frame, text='No', width=100, command=self._no).pack(side=ctk.LEFT, padx=5, pady=5)
+            ctk.CTkButton(buttons_frame, text='Yes', width=100, command=self._yes).pack(**_pack)
+            ctk.CTkButton(buttons_frame, text='No', width=100, command=self._no).pack(**_pack)
         elif _type == YESNOCANCEL:
-            ctk.CTkButton(buttons_frame, text='Yes', width=100, command=self._ok).pack(side=ctk.LEFT, padx=5, pady=5)
-            ctk.CTkButton(buttons_frame, text='No', width=100, command=self._no).pack(side=ctk.LEFT, padx=5, pady=5)
-            ctk.CTkButton(buttons_frame, text='Cancel', width=100, command=self._cancel).pack(side=ctk.LEFT, padx=5, pady=5)
+            ctk.CTkButton(buttons_frame, text='Yes', width=100, command=self._yes).pack(**_pack)
+            ctk.CTkButton(buttons_frame, text='No', width=100, command=self._no).pack(**_pack)
+            ctk.CTkButton(buttons_frame, text='Cancel', width=100, command=self._cancel).pack(**_pack)
         elif _type == ABORTRETRYIGNORE:
-            ctk.CTkButton(buttons_frame, text='Abort', width=100, command=self._abort).pack(side=ctk.LEFT, padx=5, pady=5)
-            ctk.CTkButton(buttons_frame, text='Retry', width=100, command=self._retry).pack(side=ctk.LEFT, padx=5, pady=5)
-            ctk.CTkButton(buttons_frame, text='Cancel', width=100, command=self._cancel).pack(side=ctk.LEFT, padx=5, pady=5)
+            ctk.CTkButton(buttons_frame, text='Abort', width=100, command=self._abort).pack(**_pack)
+            ctk.CTkButton(buttons_frame, text='Retry', width=100, command=self._retry).pack(**_pack)
+            ctk.CTkButton(buttons_frame, text='Cancel', width=100, command=self._cancel).pack(**_pack)
+        elif _type == CUSTOM:
+            for button in self.buttons:
+                ctk.CTkButton(buttons_frame, text=button, width=100, command=partial(self._custom_btn, button)).pack(**_pack)
 
-        self.after(100, self._make_modal)
+        self.after(150, self._make_modal)
 
     def _make_modal(self):
         self.grab_set()
         self.focus_force()
 
+    def _custom_btn(self, button:str):
+        self.result = button
+        self.close()
+
     def _ok(self):
-        self.result = True
+        self.result = OK
+        self.close()
+
+    def _yes(self):
+        self.result = YES
         self.close()
 
     def _no(self):
-        self.result = False
+        self.result = NO
         self.close()
 
     def _retry(self):
@@ -175,4 +193,3 @@ class MessageBox(ctk.CTkToplevel):
     def get(self):
         self.wait_window()
         return self.result
-
