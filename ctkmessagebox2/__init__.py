@@ -1,1 +1,1 @@
-from ctkmessagebox import *
+from .ctkmessagebox import *
