@@ -6,4 +6,3 @@ dist/
 ctkmessagebox.egg-info/
 pyproject.toml
 setup.py
-abacate
