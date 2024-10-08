@@ -24,15 +24,29 @@ The window size is self adjustable according to the number of lines in the messa
 Messages will also be displayed with a scrollbar if they are bigger than the message box window. 
 
 The main code will stop and wait for the message box to be closed and the function returns a value related to the button clicked:
-- `showinfo(...)` returns `True` for 'Ok' button. 
-- `showsuccess(...)` -> returns `True` for 'Ok'.
-- `showwarning(...)` -> returns `True` for 'Ok'.
-- `showerror(...)` -> returns `True` for 'Ok'.
-- `askokcancel(...)` -> returns `True` for 'Ok', `False` for 'Cancel'. 
-- `askyesno(...)` -> returns `True` for 'Yes', `False` for 'No'.
-- `askyesnocancel(...)` -> returns `True` for 'Yes', `False` for 'No', `"cancel"` for 'Cancel'.
-- `askretrycancel(...)` -> returns `True` for 'Retry', `False` for 'Cancel'
-- 
+- `showinfo(master, title:str, message:str)` 
+- `showsuccess(master, title:str, message:str)`
+- `showwarning(master, title:str, message:str)`
+- `showerror(master, title:str, message:str)`
+- `askokcancel(master, title:str, message:str)`
+- `askyesno(master, title:str, message:str)` 
+- `askyesnocancel(master, title:str, message:str)`
+- `askretrycancel(master, title:str, message:str)`
+- `showcustom(master, title:str, message:str, icon:str, *buttons:[str])` 
+
+![ctkmb2.png](ctkmb2.png)
+
+## Icons
+There are 5 icons designed for this package and are free to use and redistribute. 
+![IMG_0080.PNG](IMG_0080.PNG)
+Icons variables:
+```python
+ERROR = "icons/error-icon.png"
+INFO = "icons/info-icon.png"
+QUESTION = "icons/ask-icon.png"
+WARNING = "icons/alert-icon.png"
+SUCCESS = "icons/ok-icon.png"
+```
 
 ## Installation
 
@@ -76,27 +90,26 @@ app.mainloop()
 Complete example that allows you to test all message boxes available:
 ```python
 import customtkinter as ctk
-from ctkmessagebox2.ctkmessagebox import *
-
-ctk.set_appearance_mode('light')
+import ctkmessagebox2 as messagebox
 
 class AppTest(ctk.CTk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.minsize(400, 200)
-        self.title("CTkMEssageBox Demo")
+        self.title("CTkMessageBox 2 Demo")
 
         buttons = ctk.CTkFrame(self)
         buttons.pack(side=ctk.LEFT)
         self.button_1 = ctk.CTkButton(buttons, text="showinfo", command=self.showinfo)
-        self.button_1 = ctk.CTkButton(buttons, text="showsuccess", command=self.showsuccess)
-        self.button_2 = ctk.CTkButton(buttons, text="showwarning", command=self.showwarning)
-        self.button_3 = ctk.CTkButton(buttons, text="showerror", command=self.showerror)
-        self.button_4 = ctk.CTkButton(buttons, text="askquestion", command=self.askquestion)
+        self.button_2 = ctk.CTkButton(buttons, text="showsuccess", command=self.showsuccess)
+        self.button_3 = ctk.CTkButton(buttons, text="showwarning", command=self.showwarning)
+        self.button_4 = ctk.CTkButton(buttons, text="showerror", command=self.showerror)
         self.button_5 = ctk.CTkButton(buttons, text="askokcancel", command=self.askokcancel)
         self.button_6 = ctk.CTkButton(buttons, text="askyesno", command=self.askyesno)
         self.button_7 = ctk.CTkButton(buttons, text="askyesnocancel", command=self.askyesnocancel)
         self.button_8 = ctk.CTkButton(buttons, text="askretrycancel", command=self.askretrycancel)
+        self.button_9 = ctk.CTkButton(buttons, text="askabortignore", command=self.askabortignore)
+        self.button_10 = ctk.CTkButton(buttons, text="custom", command=self.custom)
         self.button_1.pack(side="top", padx=10, pady=10)
         self.button_2.pack(side="top", padx=10, pady=10)
         self.button_3.pack(side="top", padx=10, pady=10)
@@ -105,92 +118,103 @@ class AppTest(ctk.CTk):
         self.button_6.pack(side="top", padx=10, pady=10)
         self.button_7.pack(side="top", padx=10, pady=10)
         self.button_8.pack(side="top", padx=10, pady=10)
+        self.button_9.pack(side="top", padx=10, pady=10)
+        self.button_10.pack(side="top", padx=10, pady=10)
 
         details = ctk.CTkFrame(self)
         details.pack(side=ctk.LEFT, fill=ctk.BOTH, expand=True, padx=5)
 
-        self._result = ctk.StringVar(value='Result: ')
-        self._title = ctk.StringVar(value='CTkMessageBox Demo')
+        self._result = ctk.StringVar(value='Clicked: ')
+        self._title = ctk.StringVar(value='CTkMessageBox 2 Demo')
 
         ctk.CTkLabel(details, textvariable=self._result).pack()
         ctk.CTkLabel(details, text='Title').pack()
         ctk.CTkEntry(details, textvariable=self._title).pack(fill=ctk.X)
         ctk.CTkLabel(details, text='Message').pack()
         self._msg = ctk.CTkTextbox(details)
-        self._msg.pack(fill=ctk.X)
+        self._msg.pack(fill=ctk.BOTH, expand=True, padx=5, pady=5)
 
         self.toplevel_window = None
+
+    def custom(self):
+        msg = self._msg.get(0.0, ctk.END).strip('\n')
+        if not msg:
+            msg = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+
+        buttons = ['CTk', 'MessageBox 2', 'is', 'awesome!']
+        icon = messagebox.SUCCESS
+        self.toplevel_window = messagebox.showcustom(self, self._title.get(), msg, icon, *buttons)
+        self._result.set(value=f"Clicked: {self.toplevel_window}")
 
     def showsuccess(self):
         msg = self._msg.get(0.0, ctk.END).strip('\n')
         if not msg:
             msg = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-        self.toplevel_window = askyesno(self, self._title.get(), msg)
+        self.toplevel_window = messagebox.showsuccess(self, self._title.get(), msg)
         self._result.set(value=f"Clicked: {self.toplevel_window}")
 
     def askyesno(self):
         msg = self._msg.get(0.0, ctk.END).strip('\n')
         if not msg:
-            msg = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-        self.toplevel_window = askyesno(self, self._title.get(), msg)
+            msg = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        self.toplevel_window = messagebox.askyesno(self, self._title.get(), msg)
         self._result.set(value=f"Clicked: {self.toplevel_window}")
 
     def askyesnocancel(self):
         msg = self._msg.get(0.0, ctk.END).strip('\n')
         if not msg:
             msg = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."  #
-        self.toplevel_window = askyesnocancel(self, self._title.get(), msg)
+        self.toplevel_window = messagebox.askyesnocancel(self, self._title.get(), msg)
         self._result.set(value=f"Clicked: {self.toplevel_window}")
 
     def askretrycancel(self):
         msg = self._msg.get(0.0, ctk.END).strip('\n')
         if not msg:
             msg = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-        self.toplevel_window = askretrycancel(self, self._title.get(), msg)
+        self.toplevel_window = messagebox.askretrycancel(self, self._title.get(), msg)
         self._result.set(value=f"Clicked: {self.toplevel_window}")
 
     def showinfo(self):
         msg = self._msg.get(0.0, ctk.END).strip('\n')
         if not msg:
             msg = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-        self.toplevel_window = showinfo(self, self._title.get(), msg)
+        self.toplevel_window = messagebox.showinfo(self, self._title.get(), msg)
         self._result.set(value=f"Clicked: {self.toplevel_window}")
 
     def showwarning(self):
         msg = self._msg.get(0.0, ctk.END).strip('\n')
         if not msg:
             msg = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-        self.toplevel_window = showwarning(self, self._title.get(), msg)
+        self.toplevel_window = messagebox.showwarning(self, self._title.get(), msg)
         self._result.set(value=f"Clicked: {self.toplevel_window}")
 
     def showerror(self):
         msg = self._msg.get(0.0, ctk.END).strip('\n')
         if not msg:
             msg = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-        self.toplevel_window = showerror(self, self._title.get(), msg)
+        self.toplevel_window = messagebox.showerror(self, self._title.get(), msg)
         self._result.set(value=f"Clicked: {self.toplevel_window}")
 
     def askokcancel(self):
         msg = self._msg.get(0.0, ctk.END).strip('\n')
         if not msg:
             msg = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."  #
-        self.toplevel_window = askokcancel(self, self._title.get(), msg)
+        self.toplevel_window = messagebox.askokcancel(self, self._title.get(), msg)
         self._result.set(value=f"Clicked: {self.toplevel_window}")
 
-    def askquestion(self):
+    def askabortignore(self):
         msg = self._msg.get(0.0, ctk.END).strip('\n')
         if not msg:
-            msg = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-        self.toplevel_window = askquestion(self, self._title.get(), msg)
+            msg = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."  #
+        self.toplevel_window = messagebox.askabortignore(self, self._title.get(), msg)
         self._result.set(value=f"Clicked: {self.toplevel_window}")
-
 
 
 if __name__ == "__main__":
     app = AppTest()
     app.mainloop()
 ```
-The example above it is included in the packege and you can run it from the terminal:
+The example above is included in the package, and you can run it from the terminal using the command:
 
 ```bash
 python -m ctkmessagebox2.demo
@@ -198,6 +222,8 @@ python -m ctkmessagebox2.demo
 
 ## Contributions
 Contributions are welcome! If you want to improve the project, feel free to open an issue or submit a pull request.
+
+Check the source code at https://github.com/hoffmanlucas/ctkmessagebox.
 
 ### Fork the repository
 - Create a branch (git checkout -b feature/new-feature)
