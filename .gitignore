@@ -1,2 +1,6 @@
 .venv/
 venv/
+*.pypirc
+.idea/
+dist/
+ctkmessagebox.egg-info/
