@@ -19,5 +19,6 @@ setup(
     python_requires=">=3.6",  # Versão mínima do Python
     install_requires=[  # Dependências do pacote, se houver
         "customtkinter",
+        "Pillow"
     ],
 )
