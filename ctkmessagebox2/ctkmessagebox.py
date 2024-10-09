@@ -104,8 +104,20 @@ class MessageBox(ctk.CTkToplevel):
         n_lines += message.count('\n')
         super().__init__(master)
 
+        # Definindo o tamanho da janela
+        width = 300
+        height = 150+9*n_lines
+
+        # Obtendo a largura e altura da tela
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        # Calculando a posição x e y para centralizar a janela
+        position_x = int((screen_width / 2) - (width / 2))
+        position_y = int((screen_height / 2) - (height / 2))
+
         # Layout
-        self.geometry(f"450x{150 + 9*n_lines}")
+        self.geometry(f"450x{height}+{position_x}+{position_y}")
         self.title(title)
         self.resizable(False, False)
         self.attributes('-topmost', True)
