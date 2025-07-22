@@ -1,16 +1,14 @@
-[build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
-name = "ctkmessagebox2"
-version = "0.3.3"
+name = "ctkmessagebox3"
+version = "3.0.1"
+description = "A repaired and improved version of CTkMessageBox package for CustomTkinter."
 authors = [
-  { name="Lucas Hoffman", email="hoffmanlucas@gmail.com" },
+    {name = "jacky wu",email = "jacky.wucheng@gmail.com"}
 ]
-description = "The messagebox package for CustomTkinter."
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.12"
+dependencies = [
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -18,5 +16,17 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/hoffmanlucas/ctkmessagebox"
-Issues = "https://github.com/hoffmanlucas/ctkmessagebox/issues"
+Homepage = "https://github.com/jackywu/ctkmessagebox"
+Issues = "https://github.com/jackywu/ctkmessagebox/issues"
+
+
+[tool.poetry.dependencies]
+customtkinter = "^5.2.2"
+pillow = "^11.3.0"
+
+[tool.poetry]
+packages = [{include = "ctkmessagebox3"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

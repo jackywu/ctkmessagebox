@@ -1,5 +1,5 @@
 import customtkinter as ctk
-import ctkmessagebox2 as messagebox
+import ctkmessagebox3 as messagebox
 
 class AppTest(ctk.CTk):
     def __init__(self, *args, **kwargs):

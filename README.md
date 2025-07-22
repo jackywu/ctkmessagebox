@@ -1,10 +1,15 @@
-# CustomTkinter Messagebox 2
+# CustomTkinter Messagebox 3
 
-CustomTkinter Messagebox 2 is an implementation of the `tkinter.messagebox` functionalities using the `customtkinter` package. It replicates the same functions available in `tkinter.messagebox`, but with support for CustomTkinter's modernized interface.
+CustomTkinter Messagebox 3 is an revised project based on [hoffmanlucas's ctkmessagebox2](https://github.com/hoffmanlucas/ctkmessagebox). 
+this project add additional features as
 
-Optimal widgets size proportion, better UX, easy to use and does not require configuration.
+1. position the Messagebox on center of master window if master is supplied, otherwise position it on center of screen if master is None.
 
-It allows the user to copy the message to the clipboard. 
+# Introduction of ctkmessagebox2
+
+This is an implementation of the `tkinter.messagebox` functionalities using the `customtkinter` package. It replicates the same functions available in `tkinter.messagebox`, but with support for CustomTkinter's modernized interface. Optimal widgets size proportion, better UX, easy to use and does not require configuration. It allows the user to copy the message to the clipboard. 
+
+
 
 ## Features
 
