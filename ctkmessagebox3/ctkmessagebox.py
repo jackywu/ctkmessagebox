@@ -100,7 +100,7 @@ class MessageBox(ctk.CTkToplevel):
 
         # Definindo o tamanho da janela
         width = 300
-        height = 200+9*n_lines
+        height = 150+9*n_lines
 
         if master is None:
             # place the window to center of screen

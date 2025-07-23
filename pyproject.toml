@@ -1,6 +1,6 @@
 [project]
 name = "ctkmessagebox3"
-version = "3.0.2"
+version = "3.0.4"
 description = "A repaired and improved version of CTkMessageBox package for CustomTkinter."
 authors = [
     {name = "jacky wu",email = "jacky.wucheng@gmail.com"}
