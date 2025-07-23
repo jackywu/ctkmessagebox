@@ -4,12 +4,6 @@ from PIL import Image
 from functools import partial
 
 
-__all__ = ["showinfo", "showwarning", "showerror", "showcustom",
-           "showsuccess", "askokcancel", "askyesno",
-           "askyesnocancel", "askretrycancel", "askabortignore",
-           "ERROR", "INFO", "QUESTION", "WARNING", "SUCCESS"]
-
-
 def resource_path(relative_path) -> str:
     """Returns the absolute path of the resource using the current file path"""
     base_path = os.path.dirname(__file__)
